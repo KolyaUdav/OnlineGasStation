@@ -14,8 +14,8 @@
 
 - Требования: PHP 8.2, Ctype, cURL, DOM, Fileinfo, Filter, Hash, Mbstring, OpenSSL, PCRE, PDO, Session, Tokenizer и XML
 
-- git clone https://github.com/kolyaudav/test-itach.git
-- cd test-itach
+- git clone https://github.com/kolyaudav/OnlineGasStation.git
+- cd OnlineGasStation
 - composer install
 - cp .env.example .env
 - в .env добавить DB_USERNAME и DB_PASSWORD
