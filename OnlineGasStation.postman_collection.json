@@ -1,7 +1,7 @@
 {
 	"info": {
 		"_postman_id": "bd00e8d1-5482-42b5-a59c-c347d882d5bd",
-		"name": "test-itach",
+		"name": "OnlineGasStation",
 		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
 		"_exporter_id": "4164412"
 	},
@@ -9,6 +9,30 @@
 		{
 			"name": "users",
 			"item": [
+				{
+					"name": "getById",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "{{baseURL}}/users/1",
+							"host": [
+								"{{baseURL}}"
+							],
+							"path": [
+								"users",
+								"1"
+							]
+						}
+					},
+					"response": []
+				},
 				{
 					"name": "logout",
 					"request": {
@@ -130,13 +154,67 @@
 			]
 		},
 		{
+			"name": "promotions",
+			"item": [
+				{
+					"name": "create",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"title\": \"Чёрная пятница 11.11\",\r\n    \"text\": \"Внимание! Акция 30% на все виды топлива!\",\r\n    \"sale_percent\": 30,\r\n    \"date_start\": \"2025-11-11 00:00:00\",\r\n    \"date_end\": \"2025-11-30 23:59:59\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{baseURL}}/promotions",
+							"host": [
+								"{{baseURL}}"
+							],
+							"path": [
+								"promotions"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "filter",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseURL}}/promotions",
+							"host": [
+								"{{baseURL}}"
+							],
+							"path": [
+								"promotions"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
 			"name": "auth",
 			"request": {
 				"method": "POST",
 				"header": [],
 				"body": {
 					"mode": "raw",
-					"raw": "{\r\n    \"email\": \"sergei.popov@example.com\",\r\n    \"password\": \"qwerty\"\r\n    // \"email\": \"valerka@example.com\",\r\n    // \"password\": \"Valerka1_\"\r\n}",
+					"raw": "{\r\n    // \"email\": \"sergei.popov@example.com\",\r\n    // \"password\": \"qwerty\"\r\n    \"email\": \"valerka@example.com\",\r\n    \"password\": \"Valerka1_\"\r\n}",
 					"options": {
 						"raw": {
 							"language": "json"
