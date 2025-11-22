@@ -8,12 +8,14 @@ enum Entities: int
 {
     case Client = 1;
     case Admin = 2;
+    case Guest = 3;
 
     public function getLabel(): string
     {
         return match ($this) {
             self::Client => 'Клиент',
             self::Admin => 'Администратор',
+            self::Guest => 'Гость',
             default => '',
         };
     }
@@ -27,6 +29,7 @@ enum Entities: int
         return match ($this) {
             self::Admin => new \App\Services\Roles\AdminRole(),
             self::Client => new \App\Services\Roles\ClientRole(),
+            self::Guest => new \App\Services\Roles\GuestRole(),
             default => '',
         };
     }

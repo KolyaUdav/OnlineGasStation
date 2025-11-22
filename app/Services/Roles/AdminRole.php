@@ -8,4 +8,14 @@ class AdminRole extends UserRole
     {
         return true;
     }
+
+    public function canCreatePromotion(): bool
+    {
+        return true;
+    }
+
+    public function canWatchPromotions(): bool
+    {
+        return true;
+    }
 }

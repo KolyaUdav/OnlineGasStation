@@ -13,4 +13,9 @@ class ClientRole extends UserRole
     {
         return true;
     }
+
+    public function canWatchPromotions(): bool
+    {
+        return true;
+    }
 }
