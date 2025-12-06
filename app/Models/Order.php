@@ -7,6 +7,8 @@ use App\Events\OrderCreated;
 use Exception;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Log;
+use Illuminate\Validation\ValidationException;
 
 class Order extends BaseModel
 {
@@ -31,10 +33,15 @@ class Order extends BaseModel
         $data = self::fillOrderData($data, $user);
 
         $order = DB::transaction(function () use ($user, $data) {
+            $salePt = $data['sale_percent'] ?? 0;
             $cost = $data[self::FIELD_COST];
+            $cost = $cost - ($cost * $salePt / 100);
+            $data[self::FIELD_COST] = $cost;
 
             if (!self::isEnoughBalance($user, $cost)) {
-                throw new Exception('Недостаточно средств на балансе');
+                throw ValidationException::withMessages([
+                    'balance' => ['Недостаточно средств на балансе'],
+                ]);
             }
 
             $order = static::apiAdd($data);

@@ -12,6 +12,7 @@
 
 ## Установка и запуск проекта
 
+### Laravel
 - Требования: PHP 8.2, Ctype, cURL, DOM, Fileinfo, Filter, Hash, Mbstring, OpenSSL, PCRE, PDO, Session, Tokenizer и XML
 
 - git clone https://github.com/kolyaudav/OnlineGasStation.git
@@ -22,3 +23,15 @@
 - php artisan key:generate
 - php artisan migrate --seed
 - php artisan serve (при необходимости, если не настроен Nginx, Apache и т.п.) - http://127.0.0.1:8000
+
+#### Go
+
+Для корректной работы всего приложения необходимо также запустить дополнительные сервисы на Go.
+Если Go еще не установлен в вашей системе, вы можете скачать его с [официального сайта](go.dev).
+
+ - Перейдите в директорию Go-сервисов `go_services`
+ - cd go_services/promotions_service
+ - go mod tidy
+ - go build -o promotions_service
+
+    

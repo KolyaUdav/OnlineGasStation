@@ -15,6 +15,11 @@ class PromotionRequest extends FormRequest
             Promotion::FIELD_SALE_PERCENT => 'required|integer|min:1|max:100',
             Promotion::FIELD_DATE_START => 'required|date_format:Y-m-d H:i:s',
             Promotion::FIELD_DATE_END => 'required|date_format:Y-m-d H:i:s|after:' . Promotion::FIELD_DATE_START,
+            Promotion::FIELD_CONDITIONS => 'nullable|array',
+            Promotion::FIELD_CONDITIONS . '.' . Promotion::RULE_MIN_BALANCE => 'sometimes|numeric',
+            Promotion::FIELD_CONDITIONS . '.' . Promotion::RULE_MIN_REG_DATE => 'sometimes|date_format:Y-m-d H:i:s',
+            Promotion::FIELD_CONDITIONS . '.' . Promotion::RULE_FUEL_TYPES => 'sometimes|array',
+            Promotion::FIELD_CONDITIONS . '.' . Promotion::RULE_MIN_ORDER_SUM => 'sometimes|numeric',
         ];
     }
 
@@ -41,6 +46,12 @@ class PromotionRequest extends FormRequest
             Promotion::FIELD_DATE_END . '.required' => 'Дата окончания обязательна для заполнения',
             Promotion::FIELD_DATE_END . '.date_format' => 'Неверный формат даты и времени. Формат: Y-m-d H:i:s',
             Promotion::FIELD_DATE_END . '.after' => 'Дата окончания не может быть раньше даты начала',
+
+            Promotion::FIELD_CONDITIONS . '.array' => 'Условия акции должны приходить в формате массива',
+            Promotion::FIELD_CONDITIONS . '.' . Promotion::RULE_MIN_BALANCE . 'numeric' => 'Правило минимального баланса должно быть числом',
+            Promotion::FIELD_CONDITIONS . '.' . Promotion::RULE_FUEL_TYPES . 'array' => 'Правило типов топлива должно быть массивом',
+            Promotion::FIELD_CONDITIONS . '.' . Promotion::RULE_MIN_REG_DATE . 'date_format' => 'Правило времени регистрации должно быть в формате Y-m-d H:i:s',
+            Promotion::FIELD_CONDITIONS . '.' . Promotion::RULE_MIN_ORDER_SUM . 'numeric' => 'Правило минимальной суммы заказа должно быть числом',
         ];
     }
 }

@@ -15,7 +15,6 @@ class PriceHandler
     const BX_PARAMS_MAP = [
         'CODE' => Order::FIELD_FUEL_TYPE,
         'PRICE' => Order::FIELD_COST_IN_TIME,
-
     ];
 
     /**
@@ -23,7 +22,7 @@ class PriceHandler
      */
     public static function getPrices(): array
     {
-        $result = self::sendRequest();
+        $result = self::getMockResponse();
         $mappedResult = self::map($result);
 
         return $mappedResult;
@@ -52,6 +51,40 @@ class PriceHandler
                 self::BX_PARAMS_MAP['PRICE'] => $bxItem['PRICE'],
             ];
         }, $bxResult);
+    }
+
+    private static function getMockResponse(): array
+    {
+        return [
+            [
+                'CODE' => 'ai-95',
+                'PRICE' => 10,
+            ],
+            [
+                'CODE' => 'ai-92',
+                'PRICE' => 8,
+            ],
+            [
+                'CODE' => 'ai-98',
+                'PRICE' => 15,
+            ],
+            [
+                'CODE' => 'dt-euro',
+                'PRICE' => 5.6,
+            ],
+            [
+                'CODE' => 'dt-arctic',
+                'PRICE' => 18.3,
+            ],
+            [
+                'CODE' => 'adblue',
+                'PRICE' => 14,
+            ],
+            [
+                'CODE' => 'gas',
+                'PRICE' => 4.6,
+            ],
+        ];
     }
 
     private static function sendRequest(): array
