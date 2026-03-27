@@ -130,6 +130,11 @@ return [
         'auth' => [
             'path' => storage_path('logs/auth.log'),
         ],
+        'go' => [
+            'driver' => 'single',
+            'path' => storage_path('logs/go.log'),
+            'level' => 'debug',
+        ],
     ],
 
 ];

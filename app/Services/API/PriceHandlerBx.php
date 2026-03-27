@@ -2,13 +2,14 @@
 
 namespace App\Services\API;
 
+use App\Contracts\IPriceHandler;
 use App\Models\Order;
 use Illuminate\Support\Facades\Http;
 
 /**
  * Класс получения и обработки актуальных цен на топливо
  */
-class PriceHandler
+class PriceHandlerBx implements IPriceHandler
 {
     const API_H_ACCEPT = 'application/json';
 
@@ -41,6 +42,14 @@ class PriceHandler
         }
 
         return (float)$item[Order::FIELD_COST_IN_TIME];
+    }
+
+    public function getPrice(string $code): float
+    {
+        $prices = $this->getPrices();
+        $price = $this->getPriceByCode($code, $prices);
+
+        return $price;
     }
 
     private static function map(array $bxResult): array

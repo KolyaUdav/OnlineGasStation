@@ -2,15 +2,18 @@
 
 namespace App\Http\Controllers;
 
+use App\Contracts\IPriceHandler;
 use App\Http\Requests\OrderRequest;
 use App\Http\Resources\OrderResource;
 use App\Models\Order;
-use App\Services\API\PriceHandler;
+use App\Services\API\PriceHandlerGo;
 use Carbon\Carbon;
+use Illuminate\Container\Attributes\Give;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Str;
 
 class OrderController extends BaseController
 {
@@ -22,13 +25,16 @@ class OrderController extends BaseController
 
     protected $model = Order::class;
 
-    public function create(OrderRequest $request): JsonResponse
+    public function create(
+        OrderRequest $request, 
+        #[Give(PriceHandlerGo::class)]
+        IPriceHandler $priceHandler
+    ): JsonResponse
     {
         $data = $request->validated();
         $user = $request->user();
 
-        $prices = PriceHandler::getPrices();
-        $price = PriceHandler::getPriceByCode($data[Order::FIELD_FUEL_TYPE], $prices);
+        $price = $priceHandler->getPrice($data[Order::FIELD_FUEL_TYPE]);
 
         $data[Order::FIELD_COST_IN_TIME] = $price;
 
@@ -72,7 +78,7 @@ class OrderController extends BaseController
     protected function getActualSale(array $data): int
     {
         try {
-            $route = config('app.go_url') . '/api/check-promotions';
+            $route = Str::finish(config('app.go_url'), '/') . config('go.route_promotions');
             $response = Http::withoutVerifying()->acceptJson()->get($route, $data);
         } catch (\Exception $e) {
             Log::error('Ошибка соединения с сервисом акций: ' . $e->getMessage() . ', ' . $e->getCode());
