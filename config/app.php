@@ -123,6 +123,6 @@ return [
         'store' => env('APP_MAINTENANCE_STORE', 'database'),
     ],
 
-    'go_url' => env('GO_URL', 'http://localhost') . ':' . env('GO_PORT', 8000),
+    'go_url' => env('GO_URL', 'http://localhost'),
 
 ];

@@ -13,5 +13,5 @@ func init() {
 
 func main() {
 	http.HandleFunc("/api/get-gas-prices", handlers.GasPricesHandler)
-	http.ListenAndServe(":8080", nil)
+	http.ListenAndServe(":8081", nil)
 }

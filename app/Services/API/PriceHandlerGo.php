@@ -3,12 +3,15 @@
 namespace App\Services\API;
 
 use App\Contracts\IPriceHandler;
+use App\DTOs\PriceHandlerDTO;
+use App\Traits\GoServiceUrlHelper;
 use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Log;
-use Illuminate\Support\Str;
 
 class PriceHandlerGo implements IPriceHandler
 {
+    use GoServiceUrlHelper;
+
     const CODE_PARAM = 'fuel_code';
 
     const API_H_ACCEPT = 'application/json';
@@ -17,20 +20,14 @@ class PriceHandlerGo implements IPriceHandler
 
     public function __construct()
     {
-        $this->url = Str::finish(config('app.go_url'), '/') . config('go.route_prices');
+        $this->url = $this->buildServiceUrl('prices', 'get_gas_prices');
     }
 
-    public function getPrice(string $code): float
+    public function getPrice(string $code): PriceHandlerDTO
     {
         $data = $this->sendRequest($code);
 
-        $price = $data['price'];
-
-        if (!isset($data['price'])) {
-            throw new \Exception('Некорректный ответ от сервиса цен', 502);
-        }
-
-        return (float)$price;
+        return PriceHandlerDTO::fromArray($data);
     }
 
     private function sendRequest(string $code): array

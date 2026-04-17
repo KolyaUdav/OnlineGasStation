@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\DTOs\OrderDTO;
 use App\Enums\Fuels;
 use App\Events\OrderCreated;
 use Exception;
@@ -28,7 +29,7 @@ class Order extends BaseModel
     /**
      * Запустит транзакцию для сохранения данных заказа и, если сохранен, запустит событие на списание с баланса
      */
-    public static function createByTransaction(User $user, array $data): self
+    public static function createByTransaction(User $user, OrderDTO $data): self
     {
         $data = self::fillOrderData($data, $user);
 
@@ -57,15 +58,21 @@ class Order extends BaseModel
     /**
      * Заполнит основные данные заказа
      */
-    public static function fillOrderData(array $data, User $user): array
+    public static function fillOrderData(OrderDTO $orderDTO, User $user): array
     {
-        $quantity = $data[self::FIELD_QUANTITY];
-        $costInTime = $data[self::FIELD_COST_IN_TIME];
+        $data = [];
 
+        $quantity = $orderDTO->quantity;
+        $costInTime = $orderDTO->costInTime;
+        $fuelType = $orderDTO->fuelType;
         $cost = $costInTime * $quantity;
 
+        $data[self::FIELD_QUANTITY] = $quantity;
+        $data[self::FIELD_COST_IN_TIME] = $costInTime;
+        $data['sale_percent'] = $orderDTO->salePercent;
+        $data[self::FIELD_FUEL_TYPE] = $fuelType;
         $data[self::FIELD_COST] = $cost;
-        $data[self::FIELD_FUEL_NAME] = Fuels::from($data[self::FIELD_FUEL_TYPE])->getName();
+        $data[self::FIELD_FUEL_NAME] = Fuels::from($orderDTO->fuelType)->getName();
         $data[self::FIELD_USER_ID] = $user->id;
 
         return $data;

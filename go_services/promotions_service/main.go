@@ -14,5 +14,5 @@ func init() {
 
 func main() {
 	http.HandleFunc("/api/check-promotions", handlers.PromotionCheckHandler)
-	http.ListenAndServe(":8080", nil)
+	http.ListenAndServe(":8082", nil)
 }
