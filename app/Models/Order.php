@@ -37,7 +37,7 @@ class Order extends BaseModel
             $salePt = $data['sale_percent'] ?? 0;
             $cost = $data[self::FIELD_COST];
             $cost = $cost - ($cost * $salePt / 100);
-            $data[self::FIELD_COST] = $cost;
+            $data[self::FIELD_COST] = round($cost, 2);
 
             if (!self::isEnoughBalance($user, $cost)) {
                 throw ValidationException::withMessages([

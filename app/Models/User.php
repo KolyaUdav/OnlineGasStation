@@ -3,6 +3,8 @@
 namespace App\Models;
 
 use App\Enums\Roles\Entities;
+use Illuminate\Auth\Authenticatable as AuthAuthenticatable;
+use Illuminate\Contracts\Auth\Authenticatable;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\HasOne;
@@ -10,9 +12,9 @@ use Illuminate\Notifications\Notifiable;
 use Illuminate\Support\Facades\Hash;
 use Laravel\Sanctum\HasApiTokens;
 
-class User extends BaseModel
+class User extends BaseModel implements Authenticatable
 {
-    use HasApiTokens, HasFactory, Notifiable;
+    use HasApiTokens, HasFactory, Notifiable, AuthAuthenticatable;
 
     const FIELD_NAME = 'name';
     const FIELD_EMAIL = 'email';
