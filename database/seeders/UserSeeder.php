@@ -76,12 +76,18 @@ class UserSeeder extends Seeder
                 'password' => Hash::make('oleg.nikitin@example.com'),
                 'role_id' => Entities::Client->value,
             ],
+            [
+                'name' => 'Sasha',
+                'email' => 'sasha@example.com',
+                'password' => Hash::make('qwerty'),
+                'role_id' => Entities::Client->value,
+            ],
         ];
 
         foreach ($names as $userData) {
             $exists = User::where('email', $userData['email'])->exists();
 
-            if (!$exists) {
+            if ($exists) {
                 continue; // пропускаем уже существующего пользователя
             }
 

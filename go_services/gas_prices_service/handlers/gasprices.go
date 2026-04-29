@@ -4,20 +4,18 @@ import (
 	"encoding/json"
 	"fmt"
 	"net/http"
-	"slices"
 	"time"
 )
 
 var apiCache = NewCache[float64]()
 
 var fuelDictionary = map[string]string{
-	"pba":     "fcd6579c-f36b-1410-8375-00d07e0cc298",
-	"dtMin32": "bcba81ae-f46b-1410-8375-00d07e0cc298",
-	"dt":      "371b479c-f36b-1410-8375-00d07e0cc298",
-	"ai-98":   "4598469c-f36b-1410-8375-00d07e0cc298",
-	"ai-95":   "b690469c-f36b-1410-8375-00d07e0cc298",
-	"ai-92":   "f788469c-f36b-1410-8375-00d07e0cc298",
-	"dt-eco":  "21cb559c-f36b-1410-8375-00d07e0cc298",
+	"pba":    "ПБА",
+	"dt":     "ДТ",
+	"ai-98":  "АИ-98",
+	"ai-95":  "АИ-95",
+	"ai-92":  "АИ-92",
+	"dt-eco": "ДТ ECO",
 }
 
 func GasPricesHandler(w http.ResponseWriter, r *http.Request) {
@@ -68,22 +66,24 @@ func CreateCacheData(fuelID string) (float64, error) {
 		return 0, fmt.Errorf("ошибка обращения к API")
 	}
 
+	found := false
+
+	var targetPrice float64
+
 	for _, fuelPrice := range fuelPrices {
-		apiCache.Set(fuelPrice.ID, fuelPrice.Price, time.Hour*24)
+		apiCache.Set(fuelPrice.Fuel.ID, fuelPrice.Price, time.Hour*24)
+
+		if fuelPrice.Fuel.ID == fuelID {
+			targetPrice = fuelPrice.Price
+			found = true
+		}
 	}
 
-	targetPriceIdx := slices.IndexFunc(fuelPrices, func(f FuelPrice) bool {
-		return f.ID == fuelID
-	})
-
-	if targetPriceIdx == -1 {
-		return 0, fmt.Errorf("данные не найдены по индексу, индекс = -1")
+	if !found {
+		return 0, fmt.Errorf("данные не найдены для: %s", fuelID)
 	}
 
-	fuelPrice := fuelPrices[targetPriceIdx]
-	price := fuelPrice.Price
-
-	return price, nil
+	return targetPrice, nil
 }
 
 func IsCodeActual(code string) bool {

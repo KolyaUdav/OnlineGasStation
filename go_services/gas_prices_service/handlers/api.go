@@ -9,8 +9,10 @@ import (
 )
 
 type FuelPrice struct {
-	ID    string  `json:"id"`
 	Price float64 `json:"price"`
+	Fuel  struct {
+		ID string `json:"description"`
+	} `json:"fuel"`
 }
 
 func ApiHandle() ([]FuelPrice, error) {
