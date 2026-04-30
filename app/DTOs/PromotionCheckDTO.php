@@ -30,6 +30,10 @@ readonly class PromotionCheckDTO
     {
         $quantity = (int)$validated[Order::FIELD_QUANTITY];
 
+        if ($quantity <= 0) {
+            throw new \InvalidArgumentException('количество должно быть позитивным числом');
+        }
+
         return new self(
             userId: $user->id,
             quantity: $quantity,
