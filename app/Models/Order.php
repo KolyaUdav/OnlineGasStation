@@ -5,10 +5,8 @@ namespace App\Models;
 use App\DTOs\OrderDTO;
 use App\Enums\Fuels;
 use App\Events\OrderCreated;
-use Exception;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Support\Facades\DB;
-use Illuminate\Support\Facades\Log;
 use Illuminate\Validation\ValidationException;
 
 class Order extends BaseModel
@@ -19,6 +17,7 @@ class Order extends BaseModel
     const FIELD_COST_IN_TIME = 'cost_in_time';
     const FIELD_COST = 'cost';
     const FIELD_USER_ID = 'user_id';
+    const FIELD_CHECK_PATH = 'check_path';
     const FIELD_CREATED_AT = 'created_at';
     const FIELD_UPDATED_AT = 'updated_at';
 

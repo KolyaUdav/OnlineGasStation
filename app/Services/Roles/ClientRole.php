@@ -18,4 +18,9 @@ class ClientRole extends UserRole
     {
         return true;
     }
+
+    public function canWatchOrderCheck(): bool
+    {
+        return true;
+    }
 }

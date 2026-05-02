@@ -4,6 +4,8 @@ services:
     build:
       context: .
       dockerfile: ./docker/php.dockerfile
+    depends_on:
+      - redis
     volumes:
       - .:/var/www # Пробрасываем файлы из Windows в контейнер
     networks:
@@ -74,6 +76,42 @@ services:
       - db_data:/var/lib/mysql
     networks:
       - project-network
+
+  redis:
+    image: redis:alpine
+    ports:
+      - "6379:6379"
+    networks:
+      - project-network
+
+  horizon:
+    build:
+      context: .
+      dockerfile: ./docker/php.dockerfile
+    container_name: horizon
+    restart: unless-stopped
+    command: php artisan horizon
+    volumes: 
+      - .:/var/www
+    depends_on:
+      - redis
+      - app
+    networks:
+      - project-network
+
+  pdf-generator:
+    image: ghcr.io/puppeteer/puppeteer:latest
+    container_name: pdf_generator
+    restart: unless-stopped
+    command: node index.js
+    working_dir: /app
+    volumes:
+      - ./node_services/pdf-generator:/app
+    environment:
+      - PORT=3000
+    networks:
+      - project-network
+
 networks:
   project-network:
     driver: bridge

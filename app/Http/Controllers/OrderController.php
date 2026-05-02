@@ -6,18 +6,16 @@ use App\Contracts\IPriceHandler;
 use App\Contracts\IPromotionsHandler;
 use App\DTOs\OrderDTO;
 use App\DTOs\PromotionCheckDTO;
+use App\Events\OrderPlaced;
 use App\Http\Requests\OrderRequest;
+use App\Http\Resources\OrderCheckResource;
 use App\Http\Resources\OrderResource;
 use App\Models\Order;
 use App\Services\API\PriceHandlerGo;
 use App\Services\API\PromotionsHandlerGo;
-use Carbon\Carbon;
 use Illuminate\Container\Attributes\Give;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Http;
-use Illuminate\Support\Facades\Log;
-use Illuminate\Support\Str;
 
 class OrderController extends BaseController
 {
@@ -53,6 +51,8 @@ class OrderController extends BaseController
             $this->error($this->getErrorMessage('not_create'));
         }
 
+        event(new OrderPlaced($createdOrder));
+
         return $this->success(['data' => new OrderResource($createdOrder)]);
     }
 
@@ -71,5 +71,22 @@ class OrderController extends BaseController
         }
 
         return $this->success(['data' => $lastOrder]);
+    }
+
+    public function getCheck(Request $request): JsonResponse
+    {
+        $orderId = $request->get('order_id', 0);
+
+        if ($orderId <= 0) {
+            return $this->error('Не был передан ID заказа');
+        }
+
+        $order = Order::getById($orderId);
+
+        if (!$order) {
+            return $this->error('Заказ не был найден', 404);
+        }
+
+        return $this->success(['data' => new OrderCheckResource($order)]);
     }
 }

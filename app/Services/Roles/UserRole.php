@@ -31,6 +31,11 @@ class UserRole
         return false;
     }
 
+    public function canWatchOrderCheck(): bool
+    {
+        return false;
+    }
+
     /**
      * Регистрирует логику определения наличия прав для каждого пермишна
      */
@@ -42,6 +47,7 @@ class UserRole
             Permissions::CreateOrder => $this->canCreateOrder(),
             Permissions::CreatePromotion => $this->canCreatePromotion(),
             Permissions::WatchPromotions => $this->canWatchPromotions(),
+            Permissions::WatchOrderCheck => $this->canWatchOrderCheck(),
             default => false,
         };
     }

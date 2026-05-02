@@ -13,12 +13,13 @@ RUN docker-php-ext-install \
     mbstring \
     curl \
     xml \
-    dom
+    dom \
+    pcntl
 
 # 3. Установка PCOV (через временные зависимости для компиляции)
 RUN apk add --no-cache --virtual .build-deps $PHPIZE_DEPS \
-    && pecl install pcov \
-    && docker-php-ext-enable pcov \
+    && pecl install pcov redis \
+    && docker-php-ext-enable pcov redis \
     && apk del .build-deps
 
 # 4. Composer

@@ -1,0 +1,8 @@
+{
+    "name": "pdf-generator",
+    "version": "1.0.0",
+    "dependencies": {
+        "express": "^5.2.1",
+        "puppeteer": "24.42.0"
+    }
+}

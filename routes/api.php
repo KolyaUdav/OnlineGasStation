@@ -25,6 +25,10 @@ Route::middleware('auth:sanctum')->group(function () {
         Route::middleware('permission.has:' . Permissions::CreateOrder->value)->group(function () {
             Route::post('/', 'create');
         });
+
+        Route::middleware('permission.has:' . Permissions::WatchOrderCheck->value)->group(function () {
+            Route::get('/check', 'getCheck');
+        });
     });
 
     Route::controller(PromotionController::class)->prefix('promotions')->group(function () {
