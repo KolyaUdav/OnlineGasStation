@@ -27,7 +27,7 @@ Route::middleware('auth:sanctum')->group(function () {
         });
 
         Route::middleware('permission.has:' . Permissions::WatchOrderCheck->value)->group(function () {
-            Route::get('/check', 'getCheck');
+            Route::get('/{order}/check', 'getCheck');
         });
     });
 

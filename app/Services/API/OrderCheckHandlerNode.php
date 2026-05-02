@@ -3,7 +3,6 @@
 namespace App\Services\API;
 
 use App\Contracts\IOrderCheckHandler;
-use App\Enums\Fuels;
 use App\Models\Order;
 use Illuminate\Contracts\Filesystem\Filesystem;
 use Illuminate\Support\Facades\Http;

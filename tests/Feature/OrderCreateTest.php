@@ -3,11 +3,13 @@
 namespace Tests\Feature;
 
 use App\Models\Balance;
+use App\Models\Order;
 use App\Models\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Foundation\Testing\WithFaker;
 use Tests\TestCase;
 use Illuminate\Support\Facades\Http;
+use Illuminate\Support\Facades\Storage;
 
 class OrderCreateTest extends TestCase
 {
@@ -145,5 +147,43 @@ class OrderCreateTest extends TestCase
             ->postJson('/api/orders', $payload);
 
         $response->assertStatus(500);
+    }
+
+    public function test_get_order_check(): void
+    {
+        Storage::fake('public');
+
+        $user = User::factory()->create();
+
+        $order = Order::create([
+            Order::FIELD_COST => 20,
+            Order::FIELD_COST_IN_TIME => 1,
+            Order::FIELD_FUEL_NAME => 'АИ-95',
+            Order::FIELD_FUEL_TYPE => 'ai-95',
+            Order::FIELD_QUANTITY => 20,
+            Order::FIELD_USER_ID => $user->id,
+        ]);
+
+        $path = "order_checks/order_{$order->id}.pdf";
+
+        $order->update([
+            Order::FIELD_CHECK_PATH => $path,
+        ]);
+
+        $response = $this->actingAs($user, 'sanctum')
+            ->get("/api/orders/{$order->id}/check");
+
+        /** @var \Illuminate\Filesystem\FilesystemAdapter $disk */
+        $disk = Storage::disk('public');
+        $url = $disk->url($order->{Order::FIELD_CHECK_PATH});
+
+        $response->assertStatus(200)
+            ->assertJsonPath('data.check_path', $url)
+            ->assertJsonPath('status', 'success');
+
+        $this->assertDatabaseHas('orders', [
+            'id' => $order->id,
+            Order::FIELD_CHECK_PATH => $path,
+        ]);
     }
 }

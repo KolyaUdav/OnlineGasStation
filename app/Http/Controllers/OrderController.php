@@ -73,20 +73,8 @@ class OrderController extends BaseController
         return $this->success(['data' => $lastOrder]);
     }
 
-    public function getCheck(Request $request): JsonResponse
+    public function getCheck(Order $order): JsonResponse
     {
-        $orderId = $request->get('order_id', 0);
-
-        if ($orderId <= 0) {
-            return $this->error('Не был передан ID заказа');
-        }
-
-        $order = Order::getById($orderId);
-
-        if (!$order) {
-            return $this->error('Заказ не был найден', 404);
-        }
-
         return $this->success(['data' => new OrderCheckResource($order)]);
     }
 }
