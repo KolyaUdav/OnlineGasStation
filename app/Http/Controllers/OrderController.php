@@ -11,9 +11,6 @@ use App\Http\Requests\OrderRequest;
 use App\Http\Resources\OrderCheckResource;
 use App\Http\Resources\OrderResource;
 use App\Models\Order;
-use App\Services\API\PriceHandlerGo;
-use App\Services\API\PromotionsHandlerGo;
-use Illuminate\Container\Attributes\Give;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 
@@ -28,10 +25,8 @@ class OrderController extends BaseController
     protected $model = Order::class;
 
     public function create(
-        OrderRequest $request, 
-        #[Give(PriceHandlerGo::class)]
+        OrderRequest $request,
         IPriceHandler $priceHandler,
-        #[Give(PromotionsHandlerGo::class)]
         IPromotionsHandler $promotionsHandler,
     ): JsonResponse
     {
