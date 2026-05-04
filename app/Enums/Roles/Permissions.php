@@ -10,6 +10,7 @@ enum Permissions: int
     case CreatePromotion = 4;
     case WatchPromotions = 5;
     case WatchOrderCheck = 6;
+    case CreateReport = 7;
 
     public function getDescription(): string
     {
@@ -20,6 +21,7 @@ enum Permissions: int
             self::CreatePromotion => 'Создание акции',
             self::WatchPromotions => 'Просмотр акций',
             self::WatchOrderCheck => 'Просмотр чека',
+            self::CreateReport => 'Создание отчета',
             default => '',
         };
     }

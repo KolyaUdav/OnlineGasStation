@@ -36,6 +36,11 @@ class UserRole
         return false;
     }
 
+    public function canCreateReport(): bool
+    {
+        return false;
+    }
+
     /**
      * Регистрирует логику определения наличия прав для каждого пермишна
      */
@@ -48,6 +53,7 @@ class UserRole
             Permissions::CreatePromotion => $this->canCreatePromotion(),
             Permissions::WatchPromotions => $this->canWatchPromotions(),
             Permissions::WatchOrderCheck => $this->canWatchOrderCheck(),
+            Permissions::CreateReport => $this->canCreateReport(),
             default => false,
         };
     }
