@@ -3,6 +3,8 @@
 namespace App\Models;
 
 use App\Enums\Roles\Entities;
+use Filament\Models\Contracts\FilamentUser;
+use Filament\Panel;
 use Illuminate\Auth\Authenticatable as AuthAuthenticatable;
 use Illuminate\Contracts\Auth\Authenticatable;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
@@ -11,8 +13,9 @@ use Illuminate\Database\Eloquent\Relations\HasOne;
 use Illuminate\Notifications\Notifiable;
 use Illuminate\Support\Facades\Hash;
 use Laravel\Sanctum\HasApiTokens;
+use Override;
 
-class User extends BaseModel implements Authenticatable
+class User extends BaseModel implements Authenticatable, FilamentUser
 {
     use HasApiTokens, HasFactory, Notifiable, AuthAuthenticatable;
 
@@ -83,6 +86,12 @@ class User extends BaseModel implements Authenticatable
     public function orders(): HasMany
     {
         return $this->hasMany(Order::class, Order::FIELD_USER_ID);
+    }
+
+    #[Override]
+    public function canAccessPanel(Panel $panel): bool
+    {
+        return $this->{self::FIELD_ROLE_ID} === Entities::Admin->value;
     }
 
     protected function casts(): array

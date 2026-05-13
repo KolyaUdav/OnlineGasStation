@@ -19,8 +19,6 @@ class Report extends BaseModel
     const FIELD_ERROR_MESSAGE = 'error_message';
     const FIELD_COMPLETED_AT = 'completed_at';
 
-    const TYPE_GENERAL_ANALYTICS = 'general_analytics';
-
     protected $guarded = [
         'id',
     ];
