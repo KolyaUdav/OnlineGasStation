@@ -5,7 +5,7 @@ namespace App\Models;
 use App\Enums\Reports\Statuses;
 use App\Enums\Reports\Types;
 use Illuminate\Database\Eloquent\Concerns\HasUuids;
-use Illuminate\Database\Eloquent\Relations\HasOne;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
 class Report extends BaseModel
 {
@@ -30,8 +30,8 @@ class Report extends BaseModel
         self::FIELD_COMPLETED_AT => 'datetime',
     ];
 
-    public function user(): HasOne
+    public function user(): BelongsTo
     {
-        return $this->hasOne(User::class, self::FIELD_USER_ID);
+        return $this->belongsTo(User::class, self::FIELD_USER_ID);
     }
 }

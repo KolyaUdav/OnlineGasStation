@@ -10,6 +10,7 @@ services:
       - .:/var/www # Пробрасываем файлы из Windows в контейнер
     networks:
       - project-network
+    user: "${UID}:${GID}"
 
   # Наш веб-сервер Nginx
   nginx:
@@ -113,6 +114,24 @@ services:
       - PORT=3000
     networks:
       - project-network
+
+  reverb:
+    build:
+      context: .
+      dockerfile: ./docker/php.dockerfile
+    container_name: onlinegasstation-reverb
+    restart: unless-stopped
+    command: php artisan reverb:start --host=0.0.0.0 --port=8080 --debug
+    ports:
+      - "8080:8080"
+    volumes:
+      - .:/var/www
+    depends_on:
+      - redis
+      - app
+    networks:
+      - project-network
+    user: "${UID}:${GID}"
 
 networks:
   project-network:

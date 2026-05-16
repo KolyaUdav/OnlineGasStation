@@ -2,9 +2,11 @@
 
 namespace App\Providers;
 
+use App\Contracts\IOrderAnalyzer;
 use App\Contracts\IOrderCheckHandler;
 use App\Contracts\IPriceHandler;
 use App\Contracts\IPromotionsHandler;
+use App\Services\Admin\OrderAnalyzer;
 use App\Services\API\OrderCheckHandlerNode;
 use App\Services\API\PriceHandlerCached;
 use App\Services\API\PriceHandlerGo;
@@ -32,6 +34,11 @@ class AppServiceProvider extends ServiceProvider
         $this->app->bind(
             IPromotionsHandler::class,
             PromotionsHandlerGo::class
+        );
+
+        $this->app->bind(
+            IOrderAnalyzer::class,
+            OrderAnalyzer::class
         );
     }
 
