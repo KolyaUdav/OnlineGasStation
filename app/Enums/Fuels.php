@@ -2,7 +2,9 @@
 
 namespace App\Enums;
 
-enum Fuels: string
+use Filament\Support\Contracts\HasLabel;
+
+enum Fuels: string implements HasLabel
 {
     case PBA = 'pba';
     case DtMin32 = 'dt-min32';
@@ -12,7 +14,7 @@ enum Fuels: string
     case Ai92 = 'ai-92';
     case DtEco = 'dt-eco';
 
-    public function getName(): string
+    public function getLabel(): string
     {
         return match ($this) {
             self::Ai95 => 'АИ-95',

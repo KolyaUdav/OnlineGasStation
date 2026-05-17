@@ -71,7 +71,7 @@ class Order extends BaseModel
         $data['sale_percent'] = $orderDTO->salePercent;
         $data[self::FIELD_FUEL_TYPE] = $fuelType;
         $data[self::FIELD_COST] = $cost;
-        $data[self::FIELD_FUEL_NAME] = Fuels::from($orderDTO->fuelType)->getName();
+        $data[self::FIELD_FUEL_NAME] = Fuels::from($orderDTO->fuelType)->getLabel();
         $data[self::FIELD_USER_ID] = $user->id;
 
         return $data;

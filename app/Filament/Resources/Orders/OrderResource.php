@@ -7,10 +7,10 @@ use App\Filament\Resources\Orders\Pages\EditOrder;
 use App\Filament\Resources\Orders\Pages\ListOrders;
 use App\Filament\Resources\Orders\Pages\ViewOrder;
 use App\Filament\Resources\Orders\Schemas\OrderForm;
-use App\Filament\Resources\Orders\Schemas\OrderInfolist;
 use App\Filament\Resources\Orders\Tables\OrdersTable;
 use App\Models\Order;
 use BackedEnum;
+use Filament\Infolists\Components\TextEntry;
 use Filament\Resources\Resource;
 use Filament\Schemas\Schema;
 use Filament\Support\Icons\Heroicon;
@@ -31,7 +31,29 @@ class OrderResource extends Resource
 
     public static function infolist(Schema $schema): Schema
     {
-        return OrderInfolist::configure($schema);
+        return $schema
+            ->components([
+                TextEntry::make('fuel_name')
+                    ->label('Название топлива')
+                    ->color('success'),
+                TextEntry::make('quantity')
+                    ->label('Количество')
+                    ->color('success'),
+                TextEntry::make('cost_in_time')
+                    ->label('Стоимость единицы')
+                    ->prefix('BYN ')
+                    ->color('success'),
+                TextEntry::make('cost')
+                    ->label('Стоимость')
+                    ->prefix('BYN ')
+                    ->color('success'),
+                TextEntry::make('user.name')
+                    ->label('Заказчик')
+                    ->color('success'),
+                TextEntry::make('check_path')
+                    ->label('Путь к чеку')
+                    ->color('success'),
+            ]);
     }
 
     public static function table(Table $table): Table

@@ -10,10 +10,12 @@ class ViewOrder extends ViewRecord
 {
     protected static string $resource = OrderResource::class;
 
+    protected ?string $heading = 'Просмотр заказа';
+
     protected function getHeaderActions(): array
     {
         return [
-            EditAction::make(),
+            //EditAction::make(),
         ];
     }
 }

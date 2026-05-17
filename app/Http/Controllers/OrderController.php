@@ -2,15 +2,12 @@
 
 namespace App\Http\Controllers;
 
-use App\Contracts\IPriceHandler;
-use App\Contracts\IPromotionsHandler;
-use App\DTOs\OrderDTO;
-use App\DTOs\PromotionCheckDTO;
 use App\Events\OrderPlaced;
 use App\Http\Requests\OrderRequest;
 use App\Http\Resources\OrderCheckResource;
 use App\Http\Resources\OrderResource;
 use App\Models\Order;
+use App\Services\OrderHandler;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 
@@ -26,21 +23,12 @@ class OrderController extends BaseController
 
     public function create(
         OrderRequest $request,
-        IPriceHandler $priceHandler,
-        IPromotionsHandler $promotionsHandler,
     ): JsonResponse
     {
         $validated = $request->validated();
         $user = $request->user();
 
-        $priceData = $priceHandler->getPrice($validated[Order::FIELD_FUEL_TYPE]);
-        $price = $priceData->price;
-
-        $pcDTO = PromotionCheckDTO::fromOrderData($user, $price, $validated);
-        $salePercent = $promotionsHandler->getSale($pcDTO);
-
-        $orderDTO = OrderDTO::make($validated, $price, $salePercent);
-        $createdOrder = Order::createByTransaction($user, $orderDTO);
+        $createdOrder = (new OrderHandler($validated))->create($user);
 
         if (!$createdOrder) {
             $this->error($this->getErrorMessage('not_create'));

@@ -16,35 +16,33 @@ class OrdersTable
         return $table
             ->columns([
                 TextColumn::make('fuel_name')
-                    ->searchable(),
-                TextColumn::make('fuel_type')
+                    ->label('Название топлива')
                     ->searchable(),
                 TextColumn::make('quantity')
                     ->numeric()
+                    ->label('Количество')
                     ->sortable(),
                 TextColumn::make('cost_in_time')
                     ->numeric()
+                    ->label('Стоимость единицы')
                     ->sortable(),
                 TextColumn::make('cost')
-                    ->money()
+                    ->label('Стоимость заказа')
+                    ->money('BYN')
                     ->sortable(),
                 TextColumn::make('user.name')
+                    ->label('Заказчик')
                     ->searchable(),
                 TextColumn::make('created_at')
-                    ->dateTime()
-                    ->sortable()
-                    ->toggleable(isToggledHiddenByDefault: true),
-                TextColumn::make('updated_at')
-                    ->dateTime()
-                    ->sortable()
-                    ->toggleable(isToggledHiddenByDefault: true),
+                    ->dateTime('d.m.Y H:i:s')
+                    ->label('Дата и время')
+                    ->sortable(),
             ])
             ->filters([
                 //
             ])
             ->recordActions([
                 ViewAction::make(),
-                EditAction::make(),
             ])
             ->toolbarActions([
                 BulkActionGroup::make([
