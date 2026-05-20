@@ -16,7 +16,7 @@ class Promotion extends BaseModel
     const RULE_FUEL_TYPES = 'fuel_types';
     const RULE_MIN_ORDER_SUM = 'min_order_sum';
     
-    public $timestamps = false;
+    public $timestamps = true;
 
     protected $guarded = ['id'];
 
