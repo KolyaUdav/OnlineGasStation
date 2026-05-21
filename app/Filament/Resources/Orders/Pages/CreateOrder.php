@@ -15,7 +15,6 @@ use Filament\Resources\Pages\CreateRecord;
 use Filament\Schemas\Components\Utilities\Get;
 use Filament\Schemas\Components\Utilities\Set;
 use Filament\Schemas\Schema;
-use Override;
 
 class CreateOrder extends CreateRecord
 {
@@ -85,18 +84,6 @@ class CreateOrder extends CreateRecord
                 ->label('Путь к чеку')
                 ->readOnly(),
         ]);
-    }
-
-    #[Override]
-    protected function  mutateFormDataBeforeCreate(array $data): array
-    {
-        $type = $data[Order::FIELD_FUEL_TYPE];
-
-        if ($type instanceof Fuels) {
-            $data[Order::FIELD_FUEL_TYPE] = $type->value;
-        }
-
-        return $data;
     }
 
     protected function handleRecordCreation(array $data): Order

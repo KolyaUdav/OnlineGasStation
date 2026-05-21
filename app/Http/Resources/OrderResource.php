@@ -17,13 +17,13 @@ class OrderResource extends JsonResource
     {
         return [
             'id' => $this->id,
-            Order::FIELD_FUEL_TYPE => $this->{Order::FIELD_FUEL_TYPE},
-            Order::FIELD_QUANTITY => $this->{Order::FIELD_QUANTITY},
-            Order::FIELD_COST_IN_TIME => $this->{Order::FIELD_COST_IN_TIME},
-            Order::FIELD_COST => $this->{Order::FIELD_COST},
-            Order::FIELD_USER_ID => $this->{Order::FIELD_USER_ID},
-            Order::FIELD_CREATED_AT => $this->{Order::FIELD_CREATED_AT},
-            Order::FIELD_UPDATED_AT => $this->{Order::FIELD_UPDATED_AT},
+            'fuel_type' => $this->fuel_type,
+            'quantity' => $this->quantity,
+            'cost_in_time' => round($this->cost_in_time, 2),
+            'cost' => round($this->cost, 2),
+            'user_id' => $this->user_id,
+            'created_at' => $this->created_at,
+            'updated_at' => $this->updated_at,
         ];
     }
 }

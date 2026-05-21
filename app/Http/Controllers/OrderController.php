@@ -21,9 +21,7 @@ class OrderController extends BaseController
 
     protected $model = Order::class;
 
-    public function create(
-        OrderRequest $request,
-    ): JsonResponse
+    public function create(OrderRequest $request): JsonResponse
     {
         $validated = $request->validated();
         $user = $request->user();

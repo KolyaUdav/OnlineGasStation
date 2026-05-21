@@ -2,16 +2,18 @@
 
 namespace App\Http\Requests;
 
-use App\Models\Order;
+use App\Enums\Fuels;
 use Illuminate\Foundation\Http\FormRequest;
+use Illuminate\Validation\Rule;
+use Override;
 
 class OrderRequest extends FormRequest
 {
     public function rules(): array
     {
         return [
-            Order::FIELD_FUEL_TYPE => 'required|string|max:50',
-            Order::FIELD_QUANTITY => 'required|int|min:1',
+            'fuel_type' => ['required', Rule::enum(Fuels::class)],
+            'quantity' => 'required|int|min:1',
         ];
     }
 
@@ -20,13 +22,23 @@ class OrderRequest extends FormRequest
         return [
             '*.required' => 'Все поля являются обязательными',
             
-            Order::FIELD_FUEL_TYPE . '.required' => 'Тип топлива обязателен для заполнения',
-            Order::FIELD_FUEL_TYPE . '.string' => 'Тип топлива должен быть строкой',
-            Order::FIELD_FUEL_TYPE . '.max' => 'Тип топлива не должен превышать 50 символов',
+            'fuel_type.required' => 'Тип топлива обязателен для заполнения',
             
-            Order::FIELD_QUANTITY . '.required' => 'Количество обязательно для заполнения',
-            Order::FIELD_QUANTITY . '.integer' => 'Количество должно быть числом',
-            Order::FIELD_QUANTITY . '.min' => 'Количество топлива не может быть меньше 1',
+            'quantity.required' => 'Количество обязательно для заполнения',
+            'quantity.integer' => 'Количество должно быть числом',
+            'quantity.min' => 'Количество топлива не может быть меньше 1',
         ];
+    }
+
+    #[Override]
+    public function validated($key = null, $default = null)
+    {
+        $validated = parent::validated($key, $default);
+
+        if (isset($validated['fuel_type'])) {
+            $validated['fuel_type'] = $this->enum('fuel_type', Fuels::class);
+        }
+
+        return $validated;
     }
 }

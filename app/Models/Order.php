@@ -2,15 +2,14 @@
 
 namespace App\Models;
 
-use App\DTOs\OrderDTO;
 use App\Enums\Fuels;
-use App\Events\OrderCreated;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
-use Illuminate\Support\Facades\DB;
-use Illuminate\Validation\ValidationException;
 
 class Order extends BaseModel
 {
+    /**
+     * Оставлю констаты, чтобы не поломать ничего, но больше не прописываем такое
+     */
     const FIELD_FUEL_NAME = 'fuel_name';
     const FIELD_FUEL_TYPE = 'fuel_type';
     const FIELD_QUANTITY = 'quantity';
@@ -25,72 +24,10 @@ class Order extends BaseModel
 
     protected $guarded = ['id'];
 
-    /**
-     * Запустит транзакцию для сохранения данных заказа и, если сохранен, запустит событие на списание с баланса
-     */
-    public static function createByTransaction(User $user, OrderDTO $data): self
-    {
-        $data = self::fillOrderData($data, $user);
-
-        $order = DB::transaction(function () use ($user, $data) {
-            $salePt = $data['sale_percent'] ?? 0;
-            $cost = $data[self::FIELD_COST];
-            $cost = $cost - ($cost * $salePt / 100);
-            $data[self::FIELD_COST] = round($cost, 2);
-
-            if (!self::isEnoughBalance($user, $cost)) {
-                throw ValidationException::withMessages([
-                    'balance' => ['Недостаточно средств на балансе'],
-                ]);
-            }
-
-            $order = static::apiAdd($data);
-
-            DB::afterCommit(fn () => event(new OrderCreated($order)));
-
-            return $order;
-        });
-
-        return $order;
-    }
-
-    /**
-     * Заполнит основные данные заказа
-     */
-    public static function fillOrderData(OrderDTO $orderDTO, User $user): array
-    {
-        $data = [];
-
-        $quantity = $orderDTO->quantity;
-        $costInTime = $orderDTO->costInTime;
-        $fuelType = $orderDTO->fuelType;
-        $cost = $costInTime * $quantity;
-
-        $data[self::FIELD_QUANTITY] = $quantity;
-        $data[self::FIELD_COST_IN_TIME] = $costInTime;
-        $data['sale_percent'] = $orderDTO->salePercent;
-        $data[self::FIELD_FUEL_TYPE] = $fuelType;
-        $data[self::FIELD_COST] = $cost;
-        $data[self::FIELD_FUEL_NAME] = Fuels::from($orderDTO->fuelType)->getLabel();
-        $data[self::FIELD_USER_ID] = $user->id;
-
-        return $data;
-    }
-
-    /**
-     * Проверит, хватает ли денег на балансе
-     */
-    public static function isEnoughBalance(User $user, float $cost): bool
-    {
-        $balance = $user->{User::FIELD_BALANCE};
-        $balanceAmount = $balance->{Balance::FIELD_AMOUNT};
-
-        if ($balanceAmount < $cost) {
-            return false;
-        }
-
-        return true;
-    }
+    protected $casts = [
+        'fuel_type' => Fuels::class,
+        'created_at' => 'datetime',
+    ];
 
     public function user(): BelongsTo
     {
