@@ -42,10 +42,4 @@ Route::middleware('auth:sanctum')->group(function () {
             Route::post('/', 'create');
         });
     });
-
-    Route::controller(ReportController::class)->prefix('reports')->group(function () {
-        Route::middleware('permission.has: ' . Permissions::CreateReport->value)->group(function () {
-            Route::post('/', 'create');
-        });
-    });
 });
