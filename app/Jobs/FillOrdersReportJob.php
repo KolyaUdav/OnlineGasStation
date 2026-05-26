@@ -38,10 +38,21 @@ class FillOrdersReportJob implements ShouldQueue
         } else {
             $data = [
                 Report::FIELD_STATUS => Statuses::Failed,
-                Report::FIELD_ERROR_MESSAGE => 'Не удалось заполнить отчет',
+                Report::FIELD_ERROR_MESSAGE => 'Пустой результат отчета',
                 Report::FIELD_COMPLETED_AT => now(),
             ];
         }
+
+        OrdersReportBuilt::dispatch($this->id, $data);
+    }
+
+    public function failed(\Throwable $exception): void
+    {
+        $data = [
+            Report::FIELD_STATUS => Statuses::Failed,
+            Report::FIELD_ERROR_MESSAGE => $exception->getMessage(),
+            Report::FIELD_COMPLETED_AT => now(),
+        ];
 
         OrdersReportBuilt::dispatch($this->id, $data);
     }

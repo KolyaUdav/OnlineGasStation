@@ -40,9 +40,8 @@ class OrderAnalyzer implements IOrderAnalyzer
         $maxPrice = (clone $ordersQuery)->max('cost');
         $maxQuantity = (clone $ordersQuery)->max('quantity');
         $orders = (clone $ordersQuery)
-            ->select(['cost', 'quantity'])
-            ->orderBy('id')
-            ->lazy();
+            ->select(['id', 'cost', 'quantity'])
+            ->lazyById();
 
         $maxAttrByTypes = DB::table('orders')
             ->select('fuel_type')
