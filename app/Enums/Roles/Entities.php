@@ -3,8 +3,10 @@
 namespace App\Enums\Roles;
 
 use App\Services\Roles\UserRole;
+use Filament\Support\Contracts\HasColor;
+use Filament\Support\Contracts\HasLabel;
 
-enum Entities: int
+enum Entities: int implements HasLabel, HasColor
 {
     case Client = 1;
     case Admin = 2;
@@ -16,6 +18,16 @@ enum Entities: int
             self::Client => 'Клиент',
             self::Admin => 'Администратор',
             self::Guest => 'Гость',
+            default => '',
+        };
+    }
+
+    public function getColor(): string
+    {
+        return match ($this) {
+            self::Client => 'success',
+            self::Admin => 'danger',
+            self::Guest => 'warning',
             default => '',
         };
     }

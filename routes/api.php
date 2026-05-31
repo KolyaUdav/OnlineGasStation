@@ -3,7 +3,6 @@
 use App\Enums\Roles\Permissions;
 use App\Http\Controllers\OrderController;
 use App\Http\Controllers\PromotionController;
-use App\Http\Controllers\ReportController;
 use App\Http\Controllers\UserController;
 use Illuminate\Support\Facades\Route;
 

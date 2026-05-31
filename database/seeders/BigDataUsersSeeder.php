@@ -9,6 +9,7 @@ use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Str;
 use Illuminate\Support\Arr;
+use Illuminate\Support\Collection;
 
 class BigDataUsersSeeder extends Seeder
 {
@@ -25,7 +26,7 @@ class BigDataUsersSeeder extends Seeder
 
         \Illuminate\Support\Facades\DB::connection()->unsetEventDispatcher();
 
-        $totalCountUsers = 20000;
+        $totalCountUsers = 200000;
 
         $chunkLimit = 5000;
 
@@ -57,21 +58,26 @@ class BigDataUsersSeeder extends Seeder
         $this->command->info('Пользователи загружены!');
         $this->command->info('Загружаем балансы');
 
-        $userIds = DB::table('users')->select('id')->pluck('id')->toArray();
+        DB::table('users')->select('id')->orderBy('id')->chunk($chunkLimit, function (Collection $ids) use ($chunkLimit) {
+            $userIds = $ids->pluck('id')->toArray();
 
-        foreach ($userIds as $key => $id) {
-            $amount = round(fake()->randomFloat(2, 10, 500), 2);
-            
-            $balanceData[] = [
-                'amount' => $amount,
-                'user_id' => $id,
-            ];
+            foreach ($userIds as $key => $id) {
+                $amount = round(fake()->randomFloat(2, 10, 500), 2);
+                
+                $balanceData[] = [
+                    'amount' => $amount,
+                    'user_id' => $id,
+                ];
 
-            if (($key + 1) % $chunkLimit === 0) {
-                DB::table('balances')->insert($balanceData);
-                $balanceData = [];
+                if (($key + 1) % $chunkLimit === 0) {
+                    DB::table('balances')->insert($balanceData);
+                    unset($balanceData);
+                    $balanceData = [];
+                }
             }
-        }
+
+            unset($userIds);
+        });        
 
          $this->command->info('Балансы загружены!');
     }

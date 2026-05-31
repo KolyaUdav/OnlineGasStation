@@ -33,6 +33,11 @@ class User extends BaseModel implements Authenticatable, FilamentUser
         self::FIELD_PASSWORD,
     ];
 
+    protected $casts = [
+        'role_id' => Entities::class,
+        'password' => 'hashed',
+    ];
+
     public static function getUser(string $email): ?self
     {
         return self::where(self::FIELD_EMAIL, $email)->first();
@@ -55,22 +60,9 @@ class User extends BaseModel implements Authenticatable, FilamentUser
         $this->tokens()->delete();
     }
 
-    /**
-     * Получит роль из реестра зарегистрированных ролей
-     */
     public function getRole(): ?Entities
     {
-        try {
-            $roleId = (int)$this->{self::FIELD_ROLE_ID};
-
-            if ($roleId === 0) {
-                return null;
-            }
-
-            return Entities::from($roleId);
-        } catch (\Exception $e) {
-            return null;
-        }
+        return $this->role_id;
     }
 
     public function getLastOrder(): ?Order
@@ -91,13 +83,6 @@ class User extends BaseModel implements Authenticatable, FilamentUser
     #[Override]
     public function canAccessPanel(Panel $panel): bool
     {
-        return $this->{self::FIELD_ROLE_ID} === Entities::Admin->value;
-    }
-
-    protected function casts(): array
-    {
-        return [
-            self::FIELD_PASSWORD => 'hashed',
-        ];
+        return $this->role_id === Entities::Admin;
     }
 }

@@ -3,13 +3,11 @@
 namespace Database\Seeders;
 
 use App\Enums\Fuels;
-use App\Enums\Roles\Entities;
-use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\DB;
-use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Str;
 use Illuminate\Support\Arr;
+use Illuminate\Support\Collection;
 
 class BigDataOrdersSeeder extends Seeder
 {
@@ -26,13 +24,17 @@ class BigDataOrdersSeeder extends Seeder
 
         \Illuminate\Support\Facades\DB::connection()->unsetEventDispatcher();
 
-        $totalCountOrders = 1000000;
+        $totalCountOrders = 2000000;
 
         $chunkLimit = 5000;
 
         $this->command->info('Начинаем загружать заказы...');
 
-        $userIds = DB::table('users')->select('id')->limit(10)->pluck('id')->toArray();
+        $userIds = [];
+
+        DB::table('users')->select('id')->orderBy('id')->chunk($chunkLimit, function (Collection $ids) use ($chunkLimit, &$userIds) {
+            $userIds = array_merge($userIds, $ids->pluck('id')->toArray());
+        });
 
         for ($io = 0; $io <= $totalCountOrders; $io++) {
             $randFuelEnum = Arr::random(Fuels::cases());
@@ -42,7 +44,7 @@ class BigDataOrdersSeeder extends Seeder
             $costInTime = fake()->randomFloat(2, 1, 5);
             $quantity = rand(10, 300);
             $cost = round($costInTime * $quantity, 2);
-            $userId = $userIds[array_rand($userIds)];
+            $userId = $userIds[mt_rand(0, count($userIds) - 1)];
             $createdAt = now()->subDays(rand(0, 180))->subMinutes(rand(0, 1440));
             $checkPath = "http://localhost/" . Str::random(32) . ".pdf";
 
@@ -59,6 +61,7 @@ class BigDataOrdersSeeder extends Seeder
 
             if ($io % $chunkLimit === 0) {
                 DB::table('orders')->insert($ordersData);
+                unset($ordersData);
                 $ordersData = [];
 
                 $this->command->info('Пачка заказов загружена. Осталось пачек: ' . (($totalCountOrders - $io) / $chunkLimit));
